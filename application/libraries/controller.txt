@@ -1,0 +1,50 @@
+function cetak($where)
+	{
+
+	    $pdf = new FPDF('L','mm',array(90,110));
+	    $pdf->AddPage();
+	    $pdf->SetFont('Arial','B',16);
+        $pdf->Cell(90,16,'Tiket Parkir Sky Seven Mall',0,1,'C');
+	    $pdf->SetFont('Arial','',12);
+	    $query = $this->db->query('select Kode_Parkir,Plat_No,Jenis_Kendaraan,Jam_Masuk,Tanggal_Masuk,status from parkir where Kode_Parkir='.$where);
+
+	    foreach ($query->result() as $row)
+	    {
+	            $pdf->Cell(85,7,"Kode Parkir  :  $row->Kode_Parkir",2,1,"C");
+	            $pdf->Cell(80,7,"Plat Nomor  :  $row->Plat_No",2,1,"C");
+	            $pdf->Cell(82,7,"Jenis Kendaraan  :  $row->Jenis_Kendaraan",2,1,"C");
+	            $pdf->Cell(78,7,"Jam Masuk  :  $row->Jam_Masuk",2,1,"C");
+	            $pdf->Cell(90,7,"Tanggal Masuk  :  $row->Tanggal_Masuk",2,1,"C");
+	            $pdf->Cell(64,7,"Status  :  $row->status",2,1,"C");
+	    }
+
+	    		$pdf->Output();
+	}
+
+
+function simpan(){
+		date_default_timezone_set("Asia/Jakarta");
+		$data = array (
+				'Kode_Parkir' => $this->m_databaseparkir->buat_kode(),
+				'Plat_No' => $this->input->post('Plat_No'),
+				'Jenis_Kendaraan' => $this->input->post('Jenis_Kendaraan'),
+				'Jam_Masuk' => date("H:i:s"),
+				'Tanggal_Masuk' => date("Y-m-d"),
+				'Status' =>'Masuk'
+			);
+
+		$kode = $data['Kode_Parkir'];
+
+		$this->m_databaseparkir->simpan($data);
+		$this->cetak($kode);
+		
+		//redirect('Kelola_Parkir_Masuk', 'refresh');
+		
+	}
+
+
+SELECT pembayaran_event.id_pembayaran, pendaftaran.Nama_Pelanggan, pendaftaran.Alamat, pendaftaran.No_HP, pembayaran_event.total_bayar, pembayaran_event.tanggal_pembayaran, pembayaran_event.status
+FROM pembayaran_event
+INNER JOIN pendaftaran ON pembayaran_event.pendaftaran = pendaftaran.Id_Pendaftaran
+WHERE tanggal_pembayaran 
+between '2019-01-01' and '2019-01-31'
